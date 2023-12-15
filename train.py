@@ -52,8 +52,12 @@ def main(config):
     # disabling scheduler
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
     optimizer = config.init_obj(config["optimizer"], torch.optim, trainable_params)
-    lr_scheduler = config.init_obj(config["lr_scheduler"], torch.optim.lr_scheduler, optimizer)
-    lr_scheduler_name = config["lr_scheduler"]["type"] if lr_scheduler is not None else None
+    cfg_lr = config.get("lr_scheduler")
+    if cfg_lr is not None:
+        lr_scheduler = config.init_obj(config["lr_scheduler"], torch.optim.lr_scheduler, optimizer)
+        lr_scheduler_name = config["lr_scheduler"]["type"]
+    else:
+        lr_scheduler = lr_scheduler_name = None
 
     trainer = Trainer(
         model,
@@ -76,7 +80,7 @@ if __name__ == "__main__":
     args.add_argument(
         "-c",
         "--config",
-        default="/home/mac-mvak/code_disk/RawNet2/final_data/config_train_first.json",
+        default="/home/mac-mvak/code_disk/RawNet2/final_data/config_rawnet.json",
         type=str,
         help="config file path (default: None)",
     )

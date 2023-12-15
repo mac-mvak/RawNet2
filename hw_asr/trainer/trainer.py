@@ -49,7 +49,7 @@ class Trainer(BaseTrainer):
             self.len_epoch = len_epoch
         self.evaluation_dataloaders = {k: v for k, v in dataloaders.items() if k != "train"}
         self.lr_scheduler = lr_scheduler
-        self.log_step = 50
+        self.log_step = 100
 
         self.train_metrics = MetricTracker(
             "loss", "grad norm", *[m.name for m in self.metrics], writer=self.writer
@@ -83,6 +83,8 @@ class Trainer(BaseTrainer):
         self.model.train()
         self.train_metrics.reset()
         self.writer.add_scalar("epoch", epoch)
+        full_preds = []
+        full_labels = []
 
         for batch_idx, batch in enumerate(
                 tqdm(self.train_dataloader, desc="train", total=self.len_epoch)
@@ -93,6 +95,8 @@ class Trainer(BaseTrainer):
                     is_train=True,
                     metrics=self.train_metrics,
                 )
+                full_labels.append(batch['label'].detach())
+                full_preds.append(batch['logits'].detach())
             except RuntimeError as e:
                 if "out of memory" in str(e) and self.skip_oom:
                     self.logger.warning("OOM on batch. Skipping batch.")
@@ -111,7 +115,7 @@ class Trainer(BaseTrainer):
                         epoch, self._progress(batch_idx), batch["loss"].item()
                     )
                 )
-                if self.lr_scheduler_name!="ReduceLROnPlateau":
+                if self.lr_scheduler_name!="ReduceLROnPlateau" and self.lr_scheduler_name is not None:
                     lr_epoch = self.lr_scheduler.get_last_lr()[0]
                 else:
                     lr_epoch = self.optimizer.param_groups[0]['lr']
@@ -128,7 +132,13 @@ class Trainer(BaseTrainer):
             if batch_idx >= self.len_epoch:
                 break
         log = last_train_metrics
+        full_preds = torch.cat(full_preds)
+        full_labels = torch.cat(full_labels)
 
+        for met in self.metrics:
+            self.train_metrics.update(met.name, met(full_preds, full_labels))
+        log = self.train_metrics.result()
+        self._log_scalars(self.train_metrics)
         if  (self.lr_scheduler is not None) and (self.lr_scheduler_name!="ReduceLROnPlateau") and (self.lr_scheduler_name!="OneCycleLR"):
                 self.lr_scheduler.step()
 
@@ -160,8 +170,8 @@ class Trainer(BaseTrainer):
                     self.lr_scheduler.step()
 
         metrics.update("loss", batch["loss"].item())
-        for met in self.metrics:
-            metrics.update(met.name, met(**batch))
+        #for met in self.metrics:
+        #    metrics.update(met.name, met(**batch))
         return batch
 
     def _evaluation_epoch(self, epoch, part, dataloader):
@@ -173,6 +183,8 @@ class Trainer(BaseTrainer):
         """
         self.model.eval()
         self.evaluation_metrics.reset()
+        full_preds = []
+        full_labels = []
         with torch.no_grad():
             for batch_idx, batch in tqdm(
                     enumerate(dataloader),
@@ -184,14 +196,22 @@ class Trainer(BaseTrainer):
                     is_train=False,
                     metrics=self.evaluation_metrics,
                 )
+                full_labels.append(batch['label'])
+                full_preds.append(batch['logits'])
             self.writer.set_step(epoch * self.len_epoch, part)
             self._log_scalars(self.evaluation_metrics)
             #self._log_predictions(**batch)
             #Fself._log_spectrogram(batch["spectrogram"])
 
+        full_preds = torch.cat(full_preds)
+        full_labels = torch.cat(full_labels)
+
+        for met in self.metrics:
+            self.evaluation_metrics.update(met.name, met(full_preds, full_labels))
+
         # add histogram of model parameters to the tensorboard
-        for name, p in self.model.named_parameters():
-            self.writer.add_histogram(name, p, bins="auto")
+        #for name, p in self.model.named_parameters():
+        #    self.writer.add_histogram(name, p, bins="auto")
         return self.evaluation_metrics.result()
 
     def _progress(self, batch_idx):

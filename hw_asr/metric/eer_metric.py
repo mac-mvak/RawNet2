@@ -9,7 +9,7 @@ class EER(BaseMetric):
         super().__init__(name, *args, **kwargs)
 
     def __call__(self, logits, label, **kwargs):
-        probs = F.softmax(logits, dim=-1)[:, -1]
+        probs = logits[:, -1] #F.softmax(logits, dim=-1)[:, -1]
         mask = label.bool()
         return compute_eer(probs[mask].detach().cpu().numpy(),
                             probs[~mask].detach().cpu().numpy())[0]
