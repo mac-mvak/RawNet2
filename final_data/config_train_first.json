@@ -27,7 +27,7 @@
     },
     "data": {
         "train": {
-            "batch_size": 16,
+            "batch_size": 32,
             "num_workers": 5,
             "datasets": [
                 {
@@ -81,7 +81,10 @@
         "type": "CrossEntropyLoss",
         "args": {"weight": [1.0, 9.0]}
     },
-    "metrics": [],
+    "metrics": [{
+        "type": "EER",
+        "args": {}
+    }],
     "trainer": {
         "epochs": 200,
         "save_dir": "saved/",

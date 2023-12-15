@@ -129,6 +129,9 @@ class Trainer(BaseTrainer):
                 break
         log = last_train_metrics
 
+        if  (self.lr_scheduler is not None) and (self.lr_scheduler_name!="ReduceLROnPlateau") and (self.lr_scheduler_name!="OneCycleLR"):
+                self.lr_scheduler.step()
+
         for part, dataloader in self.evaluation_dataloaders.items():
             val_log = self._evaluation_epoch(epoch, part, dataloader)
             if  (self.lr_scheduler is not None) and (self.lr_scheduler_name=="ReduceLROnPlateau"):
