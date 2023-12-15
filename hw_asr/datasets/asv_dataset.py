@@ -13,10 +13,16 @@ from hw_asr.utils import ROOT_PATH
 
 logger = logging.getLogger(__name__)
 
+INDEX_NAMES = {
+    'train': 'ASVspoof2019.LA.cm.train.trn.txt',
+    'dev': 'ASVspoof2019.LA.cm.dev.trl.txt',
+    'eval': 'ASVspoof2019.LA.cm.eval.trl.txt'
+}
+
 
 class ASVDataset(BaseDataset):
     def __init__(self, part, data_dir=None, *args, **kwargs):
-
+        assert part in INDEX_NAMES
         data_dir = ROOT_PATH / "data" / "datasets" / "LA"
         data_dir.mkdir(exist_ok=True, parents=True)
         self._data_dir = data_dir
@@ -26,7 +32,7 @@ class ASVDataset(BaseDataset):
 
     def _load_index(self, part):
         index_path = self._data_dir / 'ASVspoof2019_LA_cm_protocols'
-        index_path = index_path / f'ASVspoof2019.LA.cm.{part}.trn.txt'
+        index_path = index_path / INDEX_NAMES[part]
         index = []
         with open(index_path) as f:
             while True:

@@ -13,7 +13,6 @@ from tqdm import tqdm
 from hw_asr.base import BaseTrainer
 from hw_asr.base.base_text_encoder import BaseTextEncoder
 from hw_asr.logger.utils import plot_spectrogram_to_buf
-from hw_asr.metric.utils import calc_cer, calc_wer
 from hw_asr.utils import inf_loop, MetricTracker
 
 
@@ -31,7 +30,6 @@ class Trainer(BaseTrainer):
             config,
             device,
             dataloaders,
-            text_encoder,
             lr_scheduler=None,
             lr_scheduler_name=None,
             len_epoch=None,
@@ -39,7 +37,6 @@ class Trainer(BaseTrainer):
     ):
         super().__init__(model, criterion, metrics, optimizer, config, device)
         self.skip_oom = skip_oom
-        self.text_encoder = text_encoder
         self.lr_scheduler_name = lr_scheduler_name
         self.config = config
         self.train_dataloader = dataloaders["train"]
@@ -66,7 +63,7 @@ class Trainer(BaseTrainer):
         """
         Move all necessary tensors to the HPU
         """
-        for tensor_for_gpu in ["spectrogram", "text_encoded"]:
+        for tensor_for_gpu in ["audio", "label"]:
             batch[tensor_for_gpu] = batch[tensor_for_gpu].to(device)
         return batch
 
@@ -121,8 +118,8 @@ class Trainer(BaseTrainer):
                 self.writer.add_scalar(
                    "learning rate", lr_epoch
                 )
-                self._log_predictions(**batch)
-                self._log_spectrogram(batch["spectrogram"])
+                #self._log_predictions(**batch)
+                #self._log_spectrogram(batch["spectrogram"])
                 self._log_scalars(self.train_metrics)
                 # we don't want to reset train metrics at the start of every epoch
                 # because we are interested in recent train metrics
@@ -150,18 +147,13 @@ class Trainer(BaseTrainer):
             batch.update(outputs)
         else:
             batch["logits"] = outputs
-
-        batch["log_probs"] = F.log_softmax(batch["logits"], dim=-1)
-        batch["log_probs_length"] = self.model.transform_input_lengths(
-            batch["spectrogram_length"]
-        )
         batch["loss"] = self.criterion(**batch)
         if is_train:
             batch["loss"].backward()
             self._clip_grad_norm()
             self.optimizer.step()
             if self.lr_scheduler is not None:
-                if self.lr_scheduler_name!="ReduceLROnPlateau":
+                if self.lr_scheduler_name=="OneCycleLR":
                     self.lr_scheduler.step()
 
         metrics.update("loss", batch["loss"].item())
@@ -191,8 +183,8 @@ class Trainer(BaseTrainer):
                 )
             self.writer.set_step(epoch * self.len_epoch, part)
             self._log_scalars(self.evaluation_metrics)
-            self._log_predictions(**batch)
-            self._log_spectrogram(batch["spectrogram"])
+            #self._log_predictions(**batch)
+            #Fself._log_spectrogram(batch["spectrogram"])
 
         # add histogram of model parameters to the tensorboard
         for name, p in self.model.named_parameters():
@@ -235,8 +227,6 @@ class Trainer(BaseTrainer):
         rows = {}
         for pred, target, raw_pred, audio_path, audio in tuples[:examples_to_log]:
             target = BaseTextEncoder.normalize_text(target)
-            wer = calc_wer(target, pred) * 100
-            cer = calc_cer(target, pred) * 100
 
             rows[Path(audio_path).name] = {
                 "orig_audio" : self.writer.wandb.Audio(audio_path),
@@ -244,8 +234,6 @@ class Trainer(BaseTrainer):
                 "target": target,
                 "raw prediction": raw_pred,
                 "predictions": pred,
-                "wer": wer,
-                "cer": cer,
             }
         self.writer.add_table("predictions", pd.DataFrame.from_dict(rows, orient="index"))
 

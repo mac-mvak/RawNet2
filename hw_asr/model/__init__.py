@@ -1,7 +1,5 @@
-from hw_asr.model.baseline_model import BaselineModel
-from hw_asr.model.deepspeech import DeepSpeech
+from hw_asr.model.rawnet2.rawnet2 import RawNet2
 
 __all__ = [
-    "BaselineModel",
-    "DeepSpeech"
+    "RawNet2"
 ]

@@ -1,5 +1,5 @@
-from hw_asr.loss.CTCLossWrapper import CTCLossWrapper as CTCLoss
+from hw_asr.loss.CrossEntropyLoss import CrossEntropyLoss
 
 __all__ = [
-    "CTCLoss"
+    "CrossEntropyLoss"
 ]
