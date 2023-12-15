@@ -37,21 +37,9 @@
                     }
                 }
             ]
-        },
-        "val": {
-            "batch_size": 32,
-            "num_workers": 5,
-            "datasets": [
-                {
-                    "type": "ASVDataset",
-                    "args": {
-                        "part": "dev"
-                    }
-                }
-            ]
         }, 
         "test": {
-            "batch_size": 32,
+            "batch_size": 64,
             "num_workers": 5,
             "datasets": [
                 {
