@@ -7,19 +7,9 @@ logger = logging.getLogger(__name__)
 
 MAX_LEN = 64600
 
-def pad_f(x, max_len=64600):
-    x = x.squeeze()
-    x_len = x.shape[0]
-    if x_len >= max_len:
-        return x[:max_len].unsqueeze(0)
-    # need to pad
-    num_repeats = int(max_len / x_len)+1
-    padded_x = torch.tile(x, (1, num_repeats))[:, :max_len][0]
-    padded_x = padded_x.unsqueeze(0)
-    return padded_x 
 
 def adder(vec, v):
-    v = pad_f(v)
+    v = v[..., :MAX_LEN]
     if vec is None:
         vec = v
     else:

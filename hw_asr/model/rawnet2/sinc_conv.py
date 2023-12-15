@@ -31,7 +31,7 @@ class SincConv_fast(nn.Module):
         return 700 * (10 ** (mel / 2595) - 1)
 
     def __init__(self, out_channels, kernel_size, sample_rate=16000, in_channels=1,
-                 stride=1, padding=0, dilation=1, bias=False, groups=1, min_low_hz=0, min_band_hz=0):
+                 stride=1, padding=0, dilation=1, bias=False, groups=1, min_low_hz=0, min_band_hz=0,requires_grad=False):
 
         super(SincConv_fast,self).__init__()
 
@@ -72,15 +72,15 @@ class SincConv_fast(nn.Module):
 
 
         # filter lower frequency (out_channels, 1)
-        self.low_hz_ = nn.Parameter(torch.Tensor(hz[:-1]).view(-1, 1))
+        self.low_hz_ = nn.Parameter(torch.Tensor(hz[:-1]).view(-1, 1), requires_grad)
 
         # filter frequency band (out_channels, 1)
-        self.band_hz_ = nn.Parameter(torch.Tensor(np.diff(hz)).view(-1, 1))
+        self.band_hz_ = nn.Parameter(torch.Tensor(np.diff(hz)).view(-1, 1), requires_grad)
 
         # Hamming window
         #self.window_ = torch.hamming_window(self.kernel_size)
         n_lin=torch.linspace(0, (self.kernel_size/2)-1, steps=int((self.kernel_size/2))) # computing only half of the window
-        self.window_=0.54-0.46*torch.cos(2*np.pi*n_lin/self.kernel_size);
+        self.window_=0.54-0.46*torch.cos(2*np.pi*n_lin/self.kernel_size)
 
 
         # (1, kernel_size/2)
