@@ -10,11 +10,12 @@ class RawNet2(nn.Module):
     def __init__(self, sinc_channels, sinc_kernel,
                  res_channels_1,
                  res_channels_2,
-                 gru_hidden, gru_layers=3, abs=True, pre_gru=True) -> None:
+                 gru_hidden, gru_layers=3, abs=True, pre_gru=True,
+                 mel_scale='mel') -> None:
         super().__init__()
         self.abs = abs
         self.pre_gru = pre_gru
-        self.sinc_block = SincConv_fast(sinc_channels, sinc_kernel)
+        self.sinc_block = SincConv_fast(sinc_channels, sinc_kernel, mel_scale=mel_scale)
         self.after_sinc = nn.Sequential(
             nn.MaxPool1d(3),
             nn.BatchNorm1d(sinc_channels),

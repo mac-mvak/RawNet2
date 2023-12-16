@@ -78,6 +78,6 @@
         "len_epoch": 5000,
         "visualize": "wandb",
         "wandb_project": "AntiSpoofing",
-        "wandb_name": "blinorot_params, no_abs, mel_scale"
+        "wandb_name": "blinorot_params, no_abs, linear_scale"
     }
 }
