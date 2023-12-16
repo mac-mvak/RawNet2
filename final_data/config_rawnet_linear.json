@@ -23,7 +23,7 @@
             "res_channels_1": 20,
             "res_channels_2": 128,
             "gru_hidden": 1024,
-            "abs": false,
+            "abs": true,
             "mel_scale": "linear"
         }
     },
@@ -78,6 +78,6 @@
         "len_epoch": 5000,
         "visualize": "wandb",
         "wandb_project": "AntiSpoofing",
-        "wandb_name": "blinorot_params, no_abs, linear_scale"
+        "wandb_name": "blinorot_params, linear_scale"
     }
 }
