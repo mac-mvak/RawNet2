@@ -24,7 +24,7 @@
             "res_channels_2": 128,
             "gru_hidden": 1024,
             "abs": false,
-            "mel_scale": "mel"
+            "mel_scale": "linear"
         }
     },
     "data": {
@@ -69,7 +69,7 @@
         "args": {}
     }],
     "trainer": {
-        "epochs": 10,
+        "epochs": 20,
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
