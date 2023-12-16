@@ -2,12 +2,12 @@ from operator import xor
 
 from torch.utils.data import ConcatDataset, DataLoader
 
-import hw_asr.augmentations
-import hw_asr.datasets
-from hw_asr import batch_sampler as batch_sampler_module
-from hw_asr.base.base_text_encoder import BaseTextEncoder
-from hw_asr.collate_fn.collate import collate_fn
-from hw_asr.utils.parse_config import ConfigParser
+import hw_asv.augmentations
+import hw_asv.datasets
+from hw_asv import batch_sampler as batch_sampler_module
+from hw_asv.base.base_text_encoder import BaseTextEncoder
+from hw_asv.collate_fn.collate import collate_fn
+from hw_asv.utils.parse_config import ConfigParser
 
 
 def get_dataloaders(configs: ConfigParser):
@@ -17,7 +17,7 @@ def get_dataloaders(configs: ConfigParser):
 
         # set train augmentations
         if split == 'train':
-            wave_augs, spec_augs = hw_asr.augmentations.from_configs(configs)
+            wave_augs, spec_augs = hw_asv.augmentations.from_configs(configs)
             drop_last = True
         else:
             wave_augs, spec_augs = None, None
@@ -27,7 +27,7 @@ def get_dataloaders(configs: ConfigParser):
         datasets = []
         for ds in params["datasets"]:
             datasets.append(configs.init_obj(
-                ds, hw_asr.datasets, config_parser=configs,
+                ds, hw_asv.datasets, config_parser=configs,
                 wave_augs=wave_augs, spec_augs=spec_augs))
         assert len(datasets)
         if len(datasets) > 1:

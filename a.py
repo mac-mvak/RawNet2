@@ -1,4 +1,4 @@
-from hw_asr.datasets import ASVDataset
+from hw_asv.datasets import ASVDataset
 
 config_parser = {'preprocessing': {'sr':16000}}
 

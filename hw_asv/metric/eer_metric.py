@@ -1,5 +1,5 @@
 import torch
-from hw_asr.base.base_metric import BaseMetric
+from hw_asv.base.base_metric import BaseMetric
 from .utils import compute_eer
 import torch.nn.functional as F
 

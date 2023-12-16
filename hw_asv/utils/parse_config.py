@@ -7,8 +7,8 @@ from functools import reduce, partial
 from operator import getitem
 from pathlib import Path
 
-from hw_asr.logger import setup_logging
-from hw_asr.utils import read_json, write_json, ROOT_PATH
+from hw_asv.logger import setup_logging
+from hw_asv.utils import read_json, write_json, ROOT_PATH
 
 
 class ConfigParser:
@@ -154,13 +154,13 @@ class ConfigParser:
 
     @classmethod
     def get_default_configs(cls):
-        config_path = ROOT_PATH / "hw_asr" / "config.json"
+        config_path = ROOT_PATH / "hw_asv" / "config.json"
         with config_path.open() as f:
             return cls(json.load(f))
 
     @classmethod
     def get_test_configs(cls):
-        config_path = ROOT_PATH / "hw_asr" / "tests" / "config.json"
+        config_path = ROOT_PATH / "hw_asv" / "tests" / "config.json"
         with config_path.open() as f:
             return cls(json.load(f))
 

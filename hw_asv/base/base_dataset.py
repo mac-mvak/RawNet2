@@ -8,7 +8,7 @@ import torchaudio
 from torch import Tensor
 from torch.utils.data import Dataset
 
-from hw_asr.utils.parse_config import ConfigParser
+from hw_asv.utils.parse_config import ConfigParser
 
 logger = logging.getLogger(__name__)
 

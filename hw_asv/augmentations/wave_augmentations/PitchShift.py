@@ -4,7 +4,7 @@ import torch_audiomentations
 
 from torch import Tensor
 
-from hw_asr.augmentations.base import AugmentationBase
+from hw_asv.augmentations.base import AugmentationBase
 
 
 class PitchShift(AugmentationBase):
