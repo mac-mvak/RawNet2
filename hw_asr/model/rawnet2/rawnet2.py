@@ -10,9 +10,10 @@ class RawNet2(nn.Module):
     def __init__(self, sinc_channels, sinc_kernel,
                  res_channels_1,
                  res_channels_2,
-                 gru_hidden, abs=True) -> None:
+                 gru_hidden, gru_layers=3, abs=True, pre_gru=True) -> None:
         super().__init__()
         self.abs = abs
+        self.pre_gru = pre_gru
         self.sinc_block = SincConv_fast(sinc_channels, sinc_kernel)
         self.after_sinc = nn.Sequential(
             nn.MaxPool1d(3),
@@ -27,7 +28,7 @@ class RawNet2(nn.Module):
 
         self.before_gru = nn.Sequential(nn.BatchNorm1d(res_channels_2),
                                         nn.LeakyReLU(0.3))
-        self.gru = nn.GRU(res_channels_2, gru_hidden, num_layers=3, batch_first=True)
+        self.gru = nn.GRU(res_channels_2, gru_hidden, num_layers=gru_layers, batch_first=True)
         self.fc = nn.Linear(gru_hidden, 2)
 
 
@@ -37,7 +38,8 @@ class RawNet2(nn.Module):
             out = torch.abs(out)
         out = self.after_sinc(out)
         out = self.resblock(out)
-        out = self.before_gru(out)
+        if self.pre_gru:
+            out = self.before_gru(out)
         out = out.transpose(1, 2)
         gru_out, _ = self.gru(out)
         gru_out = gru_out[:, -1, :]

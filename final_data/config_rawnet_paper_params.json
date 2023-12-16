@@ -18,10 +18,10 @@
     "arch": {
         "type": "RawNet2",
         "args": {
-            "sinc_channels": 20,
-            "sinc_kernel": 1024,
-            "res_channels_1": 20,
-            "res_channels_2": 128,
+            "sinc_channels": 128,
+            "sinc_kernel": 128,
+            "res_channels_1": 128,
+            "res_channels_2": 512,
             "gru_hidden": 1024,
             "abs": true
         }
@@ -77,6 +77,6 @@
         "len_epoch": 5000,
         "visualize": "wandb",
         "wandb_project": "AntiSpoofing",
-        "wandb_name": "blinorot_params"
+        "wandb_name": "paper_params"
     }
 }

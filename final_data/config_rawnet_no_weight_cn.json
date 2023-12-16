@@ -61,7 +61,7 @@
     },
     "loss": {
         "type": "CrossEntropyLoss",
-        "args": {"weight": [1.0, 9.0]}
+        "args": {}
     },
     "metrics": [{
         "type": "EER",
@@ -77,6 +77,6 @@
         "len_epoch": 5000,
         "visualize": "wandb",
         "wandb_project": "AntiSpoofing",
-        "wandb_name": "blinorot_params"
+        "wandb_name": "no weight CE"
     }
 }

@@ -23,7 +23,8 @@
             "res_channels_1": 20,
             "res_channels_2": 128,
             "gru_hidden": 1024,
-            "abs": true
+            "abs": true,
+            "gru_layers": 1
         }
     },
     "data": {
@@ -77,6 +78,6 @@
         "len_epoch": 5000,
         "visualize": "wandb",
         "wandb_project": "AntiSpoofing",
-        "wandb_name": "blinorot_params"
+        "wandb_name": "1-layer GRU"
     }
 }
