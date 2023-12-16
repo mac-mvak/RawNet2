@@ -199,7 +199,6 @@ class Trainer(BaseTrainer):
                 full_labels.append(batch['label'])
                 full_preds.append(batch['logits'])
             self.writer.set_step(epoch * self.len_epoch, part)
-            self._log_scalars(self.evaluation_metrics)
             #self._log_predictions(**batch)
             #Fself._log_spectrogram(batch["spectrogram"])
 
@@ -208,6 +207,7 @@ class Trainer(BaseTrainer):
 
         for met in self.metrics:
             self.evaluation_metrics.update(met.name, met(full_preds, full_labels))
+        self._log_scalars(self.evaluation_metrics)
 
         # add histogram of model parameters to the tensorboard
         #for name, p in self.model.named_parameters():
