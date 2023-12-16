@@ -10,9 +10,9 @@ class RawNet2(nn.Module):
     def __init__(self, sinc_channels, sinc_kernel,
                  res_channels_1,
                  res_channels_2,
-                 gru_hidden) -> None:
+                 gru_hidden, abs=True) -> None:
         super().__init__()
-
+        self.abs = abs
         self.sinc_block = SincConv_fast(sinc_channels, sinc_kernel)
         self.after_sinc = nn.Sequential(
             nn.MaxPool1d(3),
@@ -20,8 +20,8 @@ class RawNet2(nn.Module):
             nn.LeakyReLU(0.3)
         )
         resblocks = [Residual_block(sinc_channels, res_channels_1, first=True),
-                     Residual_block(res_channels_1, res_channels_2)] + \
-                     [Residual_block(res_channels_2, res_channels_2) for _ in range(4)]
+                     Residual_block(res_channels_1, res_channels_2)] 
+        resblocks = resblocks + [Residual_block(res_channels_2, res_channels_2) for _ in range(4)]
                     
         self.resblock = nn.Sequential(*resblocks)
 
@@ -32,13 +32,14 @@ class RawNet2(nn.Module):
 
 
     def forward(self, audio, **kwargs):
-        sinc_audio = self.sinc_block(audio.unsqueeze(1))
-        sinc_audio = torch.abs(sinc_audio)
-        before_res = self.after_sinc(sinc_audio)
-        res = self.resblock(before_res)
-        before_gru = self.before_gru(res)
-        before_gru = before_gru.transpose(1, 2)
-        gru_out, _ = self.gru(before_gru)
+        out = self.sinc_block(audio.unsqueeze(1))
+        if self.abs:
+            out = torch.abs(out)
+        out = self.after_sinc(out)
+        out = self.resblock(out)
+        out = self.before_gru(out)
+        out = out.transpose(1, 2)
+        gru_out, _ = self.gru(out)
         gru_out = gru_out[:, -1, :]
         logits = self.fc(gru_out)
         return {"logits": logits}

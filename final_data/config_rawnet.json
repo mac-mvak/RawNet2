@@ -22,7 +22,8 @@
             "sinc_kernel": 1024,
             "res_channels_1": 20,
             "res_channels_2": 128,
-            "gru_hidden": 1024
+            "gru_hidden": 1024,
+            "abs": true
         }
     },
     "data": {
@@ -69,11 +70,12 @@
     "trainer": {
         "epochs": 200,
         "save_dir": "saved/",
-        "save_period": 5,
+        "save_period": 1,
         "verbosity": 2,
         "monitor": "min val_loss",
         "early_stop": 100,
+        "len_epoch": 5000,
         "visualize": "wandb",
-        "wandb_project": "asr_project"
+        "wandb_project": "AntiSpoofing"
     }
 }
