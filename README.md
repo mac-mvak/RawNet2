@@ -19,7 +19,7 @@ unzip data.zip
 ```
 
 Then run scripts using `train.py` and `test.py`. `test.py` will print probabilities for 
-each file in CMD.
+each file in CMD. script `count_eer.py` counts EER on eval dataset with the same model.
 
 Learning configs are located in `learning_configs`, and final learning script is `learning_configs/config_no_abs.json`
 
