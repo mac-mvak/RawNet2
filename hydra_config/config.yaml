@@ -1,0 +1,68 @@
+name: rawnet2
+
+n_gpu: 1
+
+preprocessing:
+  sr: 16000
+  spectrogram:
+    type: MelSpectrogram
+    args:
+      n_mels: 256
+
+augmentations:
+  wave: []
+  spectrogram: []
+
+arch:
+  type: RawNet2
+  args:
+    sinc_channels: 20
+    sinc_kernel: 1024
+    res_channels_1: 20
+    res_channels_2: 128
+    gru_hidden: 1024
+    abs: true
+
+data: 
+  train:
+    batch_size: 32
+    num_workers: 5
+    datasets:
+    - type: ASVDataset
+      args:
+        part: train
+  test:
+    batch_size: 64
+    num_workers: 5
+    datasets:
+    - type: ASVDataset
+      args:
+        part: eval
+
+optimizer:
+  type: Adam
+  args:
+    lr: 0.0001
+
+loss:
+  type: CrossEntropyLoss
+  args:
+    weight: [1.0, 9.0]
+
+metrics:
+- type: EER
+  args: {}
+
+trainer:
+  epochs: 10
+  save_dir: saved/
+  save_period: 1
+  verbosity: 2
+  monitor: min_val_loss
+  early_stop: 100
+  len_epoch: 5000
+  visualize: wandb
+  wandb_project: AntiSpoofing
+  wandb_name: no_wd
+
+

@@ -2,6 +2,8 @@ import json
 from collections import OrderedDict
 from itertools import repeat
 from pathlib import Path
+from omegaconf import OmegaConf, DictConfig
+
 
 import pandas as pd
 import torch
@@ -19,12 +21,23 @@ def read_json(fname):
     fname = Path(fname)
     with fname.open("rt") as handle:
         return json.load(handle, object_hook=OrderedDict)
+    
+def read_json(fname):
+    fname = Path(fname)
+    with fname.open("rt") as handle:
+        return json.load(handle, object_hook=OrderedDict)
 
 
 def write_json(content, fname):
     fname = Path(fname)
     with fname.open("wt") as handle:
         json.dump(content, handle, indent=4, sort_keys=False)
+
+def write_yaml(content, fname):
+    fname = Path(fname)
+    with fname.open("wt") as handle:
+        OmegaConf.save(config=content, f=handle.name)
+
 
 
 def inf_loop(data_loader):

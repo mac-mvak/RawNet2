@@ -8,7 +8,7 @@ from operator import getitem
 from pathlib import Path
 
 from hw_asv.logger import setup_logging
-from hw_asv.utils import read_json, write_json, ROOT_PATH
+from hw_asv.utils import read_json, write_yaml, ROOT_PATH
 
 
 class ConfigParser:
@@ -17,7 +17,7 @@ class ConfigParser:
         class to parse configuration json file. Handles hyperparameters for training,
         initializations of modules, checkpoint saving and logging module.
         :param config: Dict containing configurations, hyperparameters for training.
-                       contents of `config.json` file for example.
+                       contents of `config.yaml` file for example.
         :param resume: String, path to the checkpoint being loaded.
         :param modification: Dict {keychain: value}, specifying position values to be replaced
                              from config dict.
@@ -25,8 +25,8 @@ class ConfigParser:
                        Used to save checkpoints and training log. Timestamp is being used as default
         """
         # load config file and apply modification
-        self._config = _update_config(config, modification)
-        self.resume = resume
+        self._config = config
+        self.resume = config.get('resume')
 
         # set save_dir where trained model and log will be saved.
         save_dir = Path(self.config["trainer"]["save_dir"])
@@ -43,7 +43,7 @@ class ConfigParser:
         self.log_dir.mkdir(parents=True, exist_ok=exist_ok)
 
         # save updated config file to the checkpoint dir
-        write_json(self.config, self.save_dir / "config.json")
+        write_yaml(self.config, self.save_dir / "config.yaml")
 
         # configure logging module
         setup_logging(self.log_dir)

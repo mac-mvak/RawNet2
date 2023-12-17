@@ -3,6 +3,8 @@ import collections
 import warnings
 
 import numpy as np
+import hydra
+from omegaconf import OmegaConf, DictConfig
 import torch
 
 import hw_asv.loss as module_loss
@@ -22,8 +24,9 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
-
-def main(config):
+@hydra.main(version_base=None, config_path='hydra_config', config_name='config')
+def main(cfg):
+    config = ConfigParser(cfg)
     logger = config.get_logger("train")
 
     # text_encoder
@@ -76,36 +79,4 @@ def main(config):
 
 
 if __name__ == "__main__":
-    args = argparse.ArgumentParser(description="PyTorch Template")
-    args.add_argument(
-        "-c",
-        "--config",
-        default="/home/mac-mvak/code_disk/RawNet2/final_data/config_rawnet.json",
-        type=str,
-        help="config file path (default: None)",
-    )
-    args.add_argument(
-        "-r",
-        "--resume",
-        default=None,
-        type=str,
-        help="path to latest checkpoint (default: None)",
-    )
-    args.add_argument(
-        "-d",
-        "--device",
-        default=None,
-        type=str,
-        help="indices of GPUs to enable (default: all)",
-    )
-
-    # custom cli options to modify configuration from default values given in json file.
-    CustomArgs = collections.namedtuple("CustomArgs", "flags type target")
-    options = [
-        CustomArgs(["--lr", "--learning_rate"], type=float, target="optimizer;args;lr"),
-        CustomArgs(
-            ["--bs", "--batch_size"], type=int, target="data_loader;args;batch_size"
-        ),
-    ]
-    config = ConfigParser.from_args(args, options)
-    main(config)
+    main()

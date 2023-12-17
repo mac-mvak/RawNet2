@@ -19,4 +19,6 @@ pyctcdecode
 torchaudio~=0.13.1
 pillow
 librosa
+hydra-core
+
 
