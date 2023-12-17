@@ -15,7 +15,7 @@ checkpoint = torch.load('final_data/model.pth')
 aa = checkpoint['config']['arch']
 cfg = checkpoint['config']
 dataset = ASVDataset('eval', config_parser=cfg)
-loader = DataLoader(dataset, batch_size=32, collate_fn=collate_fn, drop_last=False)
+loader = DataLoader(dataset, batch_size=64, collate_fn=collate_fn, drop_last=False)
 model = RawNet2(**aa['args'])
 model.load_state_dict(checkpoint['state_dict'])
 model = model.to(device)
