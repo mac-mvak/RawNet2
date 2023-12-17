@@ -11,6 +11,13 @@ gdown --fuzzy https://drive.google.com/file/d/1x2eQphWpaE6B1l6OxYQerhhcI3ctx3WG/
 
 Download  ASVSpoof 2019 Dataset from Kaggle and place LA folder in `data/dataset/LA` there we have LA files.
 
+You can use my Google Disk link.
+
+```
+gdown --fuzzy https://drive.google.com/file/d/1-itpc_8Eihd7SKJCPkOR4xbtjKzGWF4X/view?usp=sharing
+unzip data.zip
+```
+
 Then run scripts using `train.py` and `test.py`. `test.py` will print probabilities for 
 each file in CMD.
 
