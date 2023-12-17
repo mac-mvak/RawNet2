@@ -6,20 +6,19 @@ Copy this repo.
 
 ```shell
 pip install -r ./requirements.txt
-gdown https://drive.google.com/uc?id=1ym2rlH_CUVZggy81rIJVytBjZrAVE1X3 -O final_data/model.pth
+gdown --fuzzy https://drive.google.com/file/d/1x2eQphWpaE6B1l6OxYQerhhcI3ctx3WG/view?usp=sharing -O final_data/model.pth
 ```
 
-Then run scripts using `train.py` and `test.py`. `test.py` will print metrics in `output_metrics.json`.
+Download  ASVSpoof 2019 Dataset from Kaggle and place LA folder in `data/dataset/LA` there we have LA files.
 
-Now we will define scripts.
+Then run scripts using `train.py` and `test.py`. `test.py` will print probabilities for 
+each file in CMD.
 
-1. `config_test_clean.json` -- get results for Librispeech-clean.
-2. `config_test_other.json` -- get results for Librispeech-other.
-3. `config_train_first.json` -- train on  Librispeech-clean.
-4. `config_train_finetune.json` -- finetune on  Librispeech-other.
+Learning configs are located in `learning_configs`, and final learning script is `learning_configs/config_no_abs.json`
+
 
 
 ## Wandb Report
 
-[Link to report](https://wandb.ai/svak/asr_project/reports/ASR-project---Vmlldzo1Nzg2Mzkx)
+[Link to report](https://wandb.ai/svak/AntiSpoofing/reports/RawNet2--Vmlldzo2Mjc5MzY5?accessToken=wipdbqb0c6n1k64e4qg4agw3cgad2x5045ebha1xp48tdqa2eyoprm2e1nas9fv2)
 

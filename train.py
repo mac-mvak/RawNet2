@@ -80,7 +80,7 @@ if __name__ == "__main__":
     args.add_argument(
         "-c",
         "--config",
-        default="/home/mac-mvak/code_disk/RawNet2/final_data/config_rawnet.json",
+        default=None,
         type=str,
         help="config file path (default: None)",
     )
