@@ -1,5 +1,5 @@
+import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class FMS(nn.Module):
@@ -11,7 +11,7 @@ class FMS(nn.Module):
     def forward(self, x):
         pooled = self.avg(x).squeeze(-1)
         pooled = self.fc(pooled)
-        pooled = F.sigmoid(pooled).unsqueeze(-1)
+        pooled = torch.sigmoid(pooled).unsqueeze(-1)
         return x * pooled + pooled
 
 
