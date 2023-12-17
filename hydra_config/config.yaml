@@ -1,6 +1,12 @@
+defaults:
+ - optimizer: adamw
+
+
 name: rawnet2
 
 n_gpu: 1
+
+resume: null
 
 preprocessing:
   sr: 16000
@@ -39,11 +45,6 @@ data:
       args:
         part: eval
 
-optimizer:
-  type: Adam
-  args:
-    lr: 0.0001
-
 loss:
   type: CrossEntropyLoss
   args:
@@ -58,9 +59,9 @@ trainer:
   save_dir: saved/
   save_period: 1
   verbosity: 2
-  monitor: min_val_loss
+  monitor: min val_loss
   early_stop: 100
-  len_epoch: 5000
+  len_epoch: 10
   visualize: wandb
   wandb_project: AntiSpoofing
   wandb_name: no_wd

@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 from functools import reduce, partial
 from operator import getitem
+import collections
 from pathlib import Path
 
 from hw_asv.logger import setup_logging
@@ -25,7 +26,7 @@ class ConfigParser:
                        Used to save checkpoints and training log. Timestamp is being used as default
         """
         # load config file and apply modification
-        self._config = config
+        self._config = collections.OrderedDict(config)
         self.resume = config.get('resume')
 
         # set save_dir where trained model and log will be saved.

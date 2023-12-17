@@ -36,7 +36,7 @@ def write_json(content, fname):
 def write_yaml(content, fname):
     fname = Path(fname)
     with fname.open("wt") as handle:
-        OmegaConf.save(config=content, f=handle.name)
+        OmegaConf.save(config=dict(content), f=handle.name)
 
 
 

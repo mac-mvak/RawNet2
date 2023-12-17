@@ -41,7 +41,7 @@ class BaseDataset(Dataset):
         }
 
     def __len__(self):
-        return len(self._index)
+        return 512 #len(self._index)
 
     def load_audio(self, path):
         audio_tensor, sr = torchaudio.load(path)
